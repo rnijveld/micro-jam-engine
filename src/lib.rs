@@ -37,11 +37,20 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 #[wasm_bindgen]
 extern "C" {
     fn alert(s: &str);
+    #[wasm_bindgen(js_namespace = console)]
+    pub fn log(s: &str);
 }
 
 #[wasm_bindgen]
 pub fn greet() {
     alert("Hello, micro-jam!");
+}
+
+#[macro_export]
+macro_rules! console_log {
+    // Note that this is using the `log` function imported above during
+    // `bare_bones`
+    ($($t:tt)*) => (micro_jam_engine::log(&format_args!($($t)*).to_string()))
 }
 
 pub trait Game: Sized + 'static {
